@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:widgets_gallery/widgets/buttons/buttons_list.dart';
 import 'package:widgets_gallery/widgets/buttons/normal_button.dart';
+import 'package:widgets_gallery/widgets/loading_animations/sbi_loading_animation.dart';
 import 'package:widgets_gallery/widgets/textfields/textfields_list.dart';
 
 class WidgetList extends StatelessWidget {
@@ -21,6 +22,13 @@ class WidgetList extends StatelessWidget {
               NormalButton(
                 label: 'TextFields',
                 onTapWidget: TextFieldsList(),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              NormalButton(
+                label: 'Loading Animation',
+                onTapWidget: SBILoadingAnimation(),
               ),
             ],
           ),
