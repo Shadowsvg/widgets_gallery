@@ -12,11 +12,15 @@ class _SBILoadingAnimationState extends State<SBILoadingAnimation>
     with TickerProviderStateMixin {
   late AnimationController _animationController;
   late AnimationController _secondAnimationController;
+  late AnimationController _textAnimationController;
   late Animation<double> _radiusAnimation;
   late Animation<double> _opacityAnimation;
   late Animation<double> _radiusAnimationForSecond;
   late Animation<double> _opacityAnimationForSecond;
+  late Animation<Offset> _textSlideAnimation;
   bool secondCircleStarted = false;
+
+  String processingText = 'Processing payment';
 
   @override
   void initState() {
@@ -26,6 +30,21 @@ class _SBILoadingAnimationState extends State<SBILoadingAnimation>
         milliseconds: 1500,
       ),
     );
+
+    _secondAnimationController = AnimationController(
+      vsync: this,
+      duration: const Duration(
+        milliseconds: 1500,
+      ),
+    );
+
+    _textAnimationController = AnimationController(
+      vsync: this,
+      duration: const Duration(
+        milliseconds: 500,
+      ),
+    );
+
     _radiusAnimation = TweenSequence([
       TweenSequenceItem(tween: Tween<double>(begin: 10, end: 40), weight: 45),
       TweenSequenceItem(tween: Tween<double>(begin: 40, end: 40), weight: 40),
@@ -45,13 +64,6 @@ class _SBILoadingAnimationState extends State<SBILoadingAnimation>
       CurvedAnimation(
         parent: _animationController,
         curve: Curves.ease,
-      ),
-    );
-
-    _secondAnimationController = AnimationController(
-      vsync: this,
-      duration: const Duration(
-        milliseconds: 1500,
       ),
     );
 
@@ -87,6 +99,11 @@ class _SBILoadingAnimationState extends State<SBILoadingAnimation>
 
     _animationController.repeat();
 
+    _textSlideAnimation =
+        Tween<Offset>(begin: Offset.zero, end: const Offset(0, -1)).animate(
+      _textAnimationController,
+    );
+
     super.initState();
   }
 
@@ -101,70 +118,122 @@ class _SBILoadingAnimationState extends State<SBILoadingAnimation>
   Widget build(BuildContext context) {
     return BaseScaffold(
       color: Colors.purple,
-      body: Row(
+      body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Stack(
-                alignment: Alignment.center,
-                children: [
+          const Spacer(
+            flex: 5,
+          ),
+          SizedBox(
+            width: double.infinity,
+            height: 100,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                AnimatedBuilder(
+                  animation: _animationController,
+                  builder: (context, child) {
+                    return Container(
+                      width: _radiusAnimation.value,
+                      height: _radiusAnimation.value,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color:
+                              Colors.white.withOpacity(_opacityAnimation.value),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+                if (secondCircleStarted)
                   AnimatedBuilder(
-                    animation: _animationController,
+                    animation: _secondAnimationController,
                     builder: (context, child) {
                       return Container(
-                        width: _radiusAnimation.value,
-                        height: _radiusAnimation.value,
+                        width: _radiusAnimationForSecond.value,
+                        height: _radiusAnimationForSecond.value,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           border: Border.all(
-                            color: Colors.white
-                                .withOpacity(_opacityAnimation.value),
+                            color: Colors.white.withOpacity(
+                              _opacityAnimationForSecond.value,
+                            ),
                           ),
                         ),
                       );
                     },
                   ),
-                  if (secondCircleStarted)
-                    AnimatedBuilder(
-                      animation: _secondAnimationController,
-                      builder: (context, child) {
-                        return Container(
-                          width: _radiusAnimationForSecond.value,
-                          height: _radiusAnimationForSecond.value,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: Colors.white.withOpacity(
-                                _opacityAnimationForSecond.value,
-                              ),
-                            ),
-                          ),
-                        );
-                      },
+              ],
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          const Text(
+            'Transaction in progress',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 20,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const Text(
+            'Please wait...',
+            style: TextStyle(
+              color: Color.fromARGB(224, 238, 230, 230),
+              fontSize: 16,
+            ),
+          ),
+          const Spacer(
+            flex: 3,
+          ),
+          SlideTransition(
+            position: _textSlideAnimation,
+            child: GestureDetector(
+              onTap: () {
+                setState(() {
+                  _textAnimationController.forward();
+                  processingText = 'Payment processed';
+                });
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const SizedBox(
+                    height: 20,
+                    width: 20,
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
                     ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      left: 8,
+                    ),
+                    child: AnimatedSwitcher(
+                      duration: const Duration(
+                        milliseconds: 500,
+                      ),
+                      transitionBuilder: (child, animation) {
+                        return FadeTransition(opacity: animation, child: child);
+                      },
+                      child: Text(
+                        processingText, // changes to 'Payment processed'
+                        key: ValueKey<String>(processingText),
+                        style: const TextStyle(
+                          color: Colors.white70,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
-              // const SizedBox(
-              //   height: 20,
-              // ),
-              // const Text(
-              //   'Transaction in progress',
-              //   style: TextStyle(
-              //     color: Colors.white,
-              //     fontSize: 20,
-              //     fontWeight: FontWeight.w700,
-              //   ),
-              // ),
-              // const Text(
-              //   'Please wait...',
-              //   style: TextStyle(
-              //     color: Color.fromARGB(224, 238, 230, 230),
-              //     fontSize: 16,
-              //   ),
-              // ),
-            ],
+            ),
+          ),
+          const Spacer(
+            flex: 2,
           ),
         ],
       ),
