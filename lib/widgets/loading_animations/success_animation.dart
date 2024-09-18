@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:widgets_gallery/base_scaffold.dart';
 
 class SuccessAnimation extends StatefulWidget {
   const SuccessAnimation({super.key});
@@ -23,10 +22,10 @@ class _SuccessAnimationState extends State<SuccessAnimation>
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(
-        milliseconds: 300,
+        milliseconds: 400,
       ),
       reverseDuration: const Duration(
-        milliseconds: 150,
+        milliseconds: 200,
       ),
     );
     _scaleAnimation = Tween<double>(begin: 5, end: 13).animate(
@@ -61,7 +60,7 @@ class _SuccessAnimationState extends State<SuccessAnimation>
           scale: _scaleAnimation,
           child: AnimatedSwitcher(
             duration: const Duration(
-              milliseconds: 150,
+              milliseconds: 200,
             ),
             transitionBuilder: (child, animation) {
               return FadeTransition(

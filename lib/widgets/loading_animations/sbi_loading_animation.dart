@@ -215,6 +215,7 @@ class _SBILoadingAnimationState extends State<SBILoadingAnimation>
                   processingText = 'Payment processed';
                   _initialWidget = const Icon(
                     Icons.check_circle,
+                    color: Colors.green,
                   );
                 });
               },
@@ -267,6 +268,7 @@ class _SBILoadingAnimationState extends State<SBILoadingAnimation>
                   setState(() {
                     _initialWidgetTwo = const Icon(
                       Icons.check_circle,
+                      color: Colors.green,
                     );
                     processingTextSecond = 'Transaction Confirmed';
                   });
