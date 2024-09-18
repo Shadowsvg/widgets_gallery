@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:widgets_gallery/base_scaffold.dart';
 import 'package:widgets_gallery/custom_page_route.dart';
 import 'package:widgets_gallery/widgets/loading_animations/success_animation.dart';
 
@@ -135,8 +134,8 @@ class _SBILoadingAnimationState extends State<SBILoadingAnimation>
 
   @override
   Widget build(BuildContext context) {
-    return BaseScaffold(
-      color: Colors.purple,
+    return Scaffold(
+      backgroundColor: Colors.purple,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
