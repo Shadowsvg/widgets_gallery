@@ -1,5 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:widgets_gallery/base_scaffold.dart';
+import 'package:widgets_gallery/custom_page_route.dart';
+import 'package:widgets_gallery/widgets/loading_animations/success_animation.dart';
 
 class SBILoadingAnimation extends StatefulWidget {
   const SBILoadingAnimation({super.key});
@@ -18,9 +22,20 @@ class _SBILoadingAnimationState extends State<SBILoadingAnimation>
   late Animation<double> _radiusAnimationForSecond;
   late Animation<double> _opacityAnimationForSecond;
   late Animation<Offset> _textSlideAnimation;
+  late Animation<double> _textOpacityAnimation;
   bool secondCircleStarted = false;
+  bool isAnimated = false;
 
   String processingText = 'Processing payment';
+  String processingTextSecond = 'Waiting for confirmation';
+
+  Widget _initialWidget = const CircularProgressIndicator(
+    color: Colors.white,
+  );
+
+  Widget _initialWidgetTwo = const CircularProgressIndicator(
+    color: Colors.white,
+  );
 
   @override
   void initState() {
@@ -101,6 +116,10 @@ class _SBILoadingAnimationState extends State<SBILoadingAnimation>
 
     _textSlideAnimation =
         Tween<Offset>(begin: Offset.zero, end: const Offset(0, -1)).animate(
+      _textAnimationController,
+    );
+
+    _textOpacityAnimation = Tween<double>(begin: 0, end: 1).animate(
       _textAnimationController,
     );
 
@@ -195,40 +214,116 @@ class _SBILoadingAnimationState extends State<SBILoadingAnimation>
                 setState(() {
                   _textAnimationController.forward();
                   processingText = 'Payment processed';
+                  _initialWidget = const Icon(
+                    Icons.check_circle,
+                  );
                 });
               },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const SizedBox(
-                    height: 20,
-                    width: 20,
-                    child: CircularProgressIndicator(
-                      color: Colors.white,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      left: 8,
-                    ),
+                  SizedBox(
+                    height: 16,
+                    width: 16,
                     child: AnimatedSwitcher(
-                      duration: const Duration(
-                        milliseconds: 500,
-                      ),
+                      duration: const Duration(milliseconds: 500),
                       transitionBuilder: (child, animation) {
                         return FadeTransition(opacity: animation, child: child);
                       },
+                      child: _initialWidget,
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 8,
+                  ),
+                  AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 500),
+                    transitionBuilder: (child, animation) {
+                      return FadeTransition(opacity: animation, child: child);
+                    },
+                    child: Text(
+                      processingText, // changes to 'Payment processed'
+                      key: ValueKey<String>(
+                        processingText,
+                      ), // passing key is important when animated widget is same
+                      style: const TextStyle(
+                        color: Colors.white70,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(
+            height: 30,
+          ),
+          SlideTransition(
+            position: _textSlideAnimation,
+            child: FadeTransition(
+              opacity: _textOpacityAnimation,
+              child: GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _initialWidgetTwo = const Icon(
+                      Icons.check_circle,
+                    );
+                    processingTextSecond = 'Transaction Confirmed';
+                  });
+                  Timer(
+                      const Duration(
+                        milliseconds: 500,
+                      ), () {
+                    Navigator.push(
+                      context,
+                      CustomPageRoute(
+                        route: const SuccessAnimation(),
+                      ),
+                    );
+                  });
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      height: 16,
+                      width: 16,
+                      child: AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 500),
+                        transitionBuilder: (child, animation) {
+                          return FadeTransition(
+                            opacity: animation,
+                            child: child,
+                          );
+                        },
+                        child: _initialWidgetTwo,
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 8,
+                    ),
+                    AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 500),
+                      transitionBuilder: (child, animation) {
+                        return FadeTransition(
+                          opacity: animation,
+                          child: child,
+                        );
+                      },
                       child: Text(
-                        processingText, // changes to 'Payment processed'
-                        key: ValueKey<String>(processingText),
+                        processingTextSecond, // changes to 'Payment processed'
+                        key: ValueKey<String>(
+                          processingTextSecond,
+                        ), // passing key is important when animated widget is same
                         style: const TextStyle(
                           color: Colors.white70,
                           fontSize: 14,
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
