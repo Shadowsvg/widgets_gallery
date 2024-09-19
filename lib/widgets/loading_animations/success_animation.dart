@@ -54,7 +54,7 @@ class _SuccessAnimationState extends State<SuccessAnimation>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.green,
+      backgroundColor: const Color(0xFF065606),
       body: Center(
         child: ScaleTransition(
           scale: _scaleAnimation,

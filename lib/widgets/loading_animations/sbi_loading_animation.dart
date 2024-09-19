@@ -26,8 +26,8 @@ class _SBILoadingAnimationState extends State<SBILoadingAnimation>
   bool secondCircleStarted = false;
   bool isAnimated = false;
 
-  String processingText = 'Processing payment';
-  String processingTextSecond = 'Waiting for confirmation';
+  String processingText = 'Preparing for action...';
+  String processingTextSecond = 'Getting ready for a smooth transition...';
 
   Widget _initialWidget = const CircularProgressIndicator(
     color: Colors.white,
@@ -133,10 +133,10 @@ class _SBILoadingAnimationState extends State<SBILoadingAnimation>
     Timer(const Duration(milliseconds: 2000), () {
       _textAnimationController.forward();
       setState(() {
-        processingText = 'Payment processed';
+        processingText = 'Everything’s in motion!';
         _initialWidget = const Icon(
           Icons.check_circle,
-          color: Colors.green,
+          color: Color(0xFF065606),
         );
       });
     });
@@ -147,13 +147,13 @@ class _SBILoadingAnimationState extends State<SBILoadingAnimation>
           setState(() {
             _initialWidgetTwo = const Icon(
               Icons.check_circle,
-              color: Colors.green,
+              color: Color(0xFF065606),
             );
-            processingTextSecond = 'Transaction Confirmed';
+            processingTextSecond = 'Bringing visuals to life...';
           });
           Future.delayed(
               const Duration(
-                milliseconds: 500,
+                milliseconds: 750,
               ), () {
             _columnAnimationController.forward();
           });
@@ -192,7 +192,7 @@ class _SBILoadingAnimationState extends State<SBILoadingAnimation>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.purple,
+      backgroundColor: const Color(0xFF051F3A),
       body: FadeTransition(
         opacity: Tween<double>(begin: 1, end: 0).animate(
           _columnAnimationController,
@@ -250,7 +250,7 @@ class _SBILoadingAnimationState extends State<SBILoadingAnimation>
               height: 20,
             ),
             const Text(
-              'Transaction in progress',
+              'Animating your experience...',
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 20,
