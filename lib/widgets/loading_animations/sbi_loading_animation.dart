@@ -16,6 +16,7 @@ class _SBILoadingAnimationState extends State<SBILoadingAnimation>
   late AnimationController _animationController;
   late AnimationController _secondAnimationController;
   late AnimationController _textAnimationController;
+  late AnimationController _columnAnimationController;
   late Animation<double> _radiusAnimation;
   late Animation<double> _opacityAnimation;
   late Animation<double> _radiusAnimationForSecond;
@@ -59,6 +60,13 @@ class _SBILoadingAnimationState extends State<SBILoadingAnimation>
       ),
     );
 
+    _columnAnimationController = AnimationController(
+      vsync: this,
+      duration: const Duration(
+        milliseconds: 500,
+      ),
+    );
+
     _radiusAnimation = TweenSequence([
       TweenSequenceItem(tween: Tween<double>(begin: 10, end: 40), weight: 45),
       TweenSequenceItem(tween: Tween<double>(begin: 40, end: 40), weight: 40),
@@ -80,6 +88,8 @@ class _SBILoadingAnimationState extends State<SBILoadingAnimation>
         curve: Curves.ease,
       ),
     );
+
+    _animationController.repeat();
 
     _radiusAnimationForSecond = TweenSequence([
       TweenSequenceItem(tween: Tween<double>(begin: 10, end: 40), weight: 45),
@@ -111,8 +121,6 @@ class _SBILoadingAnimationState extends State<SBILoadingAnimation>
       }
     });
 
-    _animationController.repeat();
-
     _textSlideAnimation =
         Tween<Offset>(begin: Offset.zero, end: const Offset(0, -1)).animate(
       _textAnimationController,
@@ -122,6 +130,53 @@ class _SBILoadingAnimationState extends State<SBILoadingAnimation>
       _textAnimationController,
     );
 
+    Timer(const Duration(milliseconds: 2000), () {
+      _textAnimationController.forward();
+      setState(() {
+        processingText = 'Payment processed';
+        _initialWidget = const Icon(
+          Icons.check_circle,
+          color: Colors.green,
+        );
+      });
+    });
+
+    _textAnimationController.addListener(() {
+      if (_textAnimationController.isCompleted) {
+        Timer(const Duration(milliseconds: 2000), () {
+          setState(() {
+            _initialWidgetTwo = const Icon(
+              Icons.check_circle,
+              color: Colors.green,
+            );
+            processingTextSecond = 'Transaction Confirmed';
+          });
+          Future.delayed(
+              const Duration(
+                milliseconds: 500,
+              ), () {
+            _columnAnimationController.forward();
+          });
+        });
+      }
+    });
+
+    _columnAnimationController.addListener(() {
+      if (_columnAnimationController.isCompleted) {
+        Timer(
+            const Duration(
+              milliseconds: 500,
+            ), () {
+          Navigator.push(
+            context,
+            CustomPageRoute(
+              route: const SuccessAnimation(),
+            ),
+          );
+        });
+      }
+    });
+
     super.initState();
   }
 
@@ -129,6 +184,8 @@ class _SBILoadingAnimationState extends State<SBILoadingAnimation>
   void dispose() {
     _animationController.dispose();
     _secondAnimationController.dispose();
+    _textAnimationController.dispose();
+    _columnAnimationController.dispose();
     super.dispose();
   }
 
@@ -136,89 +193,82 @@ class _SBILoadingAnimationState extends State<SBILoadingAnimation>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.purple,
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Spacer(
-            flex: 5,
-          ),
-          SizedBox(
-            width: double.infinity,
-            height: 100,
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                AnimatedBuilder(
-                  animation: _animationController,
-                  builder: (context, child) {
-                    return Container(
-                      width: _radiusAnimation.value,
-                      height: _radiusAnimation.value,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color:
-                              Colors.white.withOpacity(_opacityAnimation.value),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-                if (secondCircleStarted)
+      body: FadeTransition(
+        opacity: Tween<double>(begin: 1, end: 0).animate(
+          _columnAnimationController,
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Spacer(
+              flex: 5,
+            ),
+            SizedBox(
+              width: double.infinity,
+              height: 100,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
                   AnimatedBuilder(
-                    animation: _secondAnimationController,
+                    animation: _animationController,
                     builder: (context, child) {
                       return Container(
-                        width: _radiusAnimationForSecond.value,
-                        height: _radiusAnimationForSecond.value,
+                        width: _radiusAnimation.value,
+                        height: _radiusAnimation.value,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           border: Border.all(
-                            color: Colors.white.withOpacity(
-                              _opacityAnimationForSecond.value,
-                            ),
+                            color: Colors.white
+                                .withOpacity(_opacityAnimation.value),
                           ),
                         ),
                       );
                     },
                   ),
-              ],
+                  if (secondCircleStarted)
+                    AnimatedBuilder(
+                      animation: _secondAnimationController,
+                      builder: (context, child) {
+                        return Container(
+                          width: _radiusAnimationForSecond.value,
+                          height: _radiusAnimationForSecond.value,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: Colors.white.withOpacity(
+                                _opacityAnimationForSecond.value,
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                ],
+              ),
             ),
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          const Text(
-            'Transaction in progress',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 20,
-              fontWeight: FontWeight.w700,
+            const SizedBox(
+              height: 20,
             ),
-          ),
-          const Text(
-            'Please wait...',
-            style: TextStyle(
-              color: Color.fromARGB(224, 238, 230, 230),
-              fontSize: 16,
+            const Text(
+              'Transaction in progress',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+                fontWeight: FontWeight.w700,
+              ),
             ),
-          ),
-          const Spacer(
-            flex: 3,
-          ),
-          SlideTransition(
-            position: _textSlideAnimation,
-            child: GestureDetector(
-              onTap: () {
-                setState(() {
-                  _textAnimationController.forward();
-                  processingText = 'Payment processed';
-                  _initialWidget = const Icon(
-                    Icons.check_circle,
-                    color: Colors.green,
-                  );
-                });
-              },
+            const Text(
+              'Please wait...',
+              style: TextStyle(
+                color: Color.fromARGB(224, 238, 230, 230),
+                fontSize: 16,
+              ),
+            ),
+            const Spacer(
+              flex: 3,
+            ),
+            SlideTransition(
+              position: _textSlideAnimation,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -255,35 +305,13 @@ class _SBILoadingAnimationState extends State<SBILoadingAnimation>
                 ],
               ),
             ),
-          ),
-          const SizedBox(
-            height: 30,
-          ),
-          SlideTransition(
-            position: _textSlideAnimation,
-            child: FadeTransition(
-              opacity: _textOpacityAnimation,
-              child: GestureDetector(
-                onTap: () {
-                  setState(() {
-                    _initialWidgetTwo = const Icon(
-                      Icons.check_circle,
-                      color: Colors.green,
-                    );
-                    processingTextSecond = 'Transaction Confirmed';
-                  });
-                  Timer(
-                      const Duration(
-                        milliseconds: 500,
-                      ), () {
-                    Navigator.push(
-                      context,
-                      CustomPageRoute(
-                        route: const SuccessAnimation(),
-                      ),
-                    );
-                  });
-                },
+            const SizedBox(
+              height: 30,
+            ),
+            SlideTransition(
+              position: _textSlideAnimation,
+              child: FadeTransition(
+                opacity: _textOpacityAnimation,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -327,11 +355,11 @@ class _SBILoadingAnimationState extends State<SBILoadingAnimation>
                 ),
               ),
             ),
-          ),
-          const Spacer(
-            flex: 2,
-          ),
-        ],
+            const Spacer(
+              flex: 2,
+            ),
+          ],
+        ),
       ),
     );
   }
