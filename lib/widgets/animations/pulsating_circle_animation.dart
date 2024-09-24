@@ -2,16 +2,17 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:widgets_gallery/custom_page_route.dart';
-import 'package:widgets_gallery/widgets/loading_animations/success_animation.dart';
+import 'package:widgets_gallery/widgets/animations/success_animation.dart';
 
-class SBILoadingAnimation extends StatefulWidget {
-  const SBILoadingAnimation({super.key});
+class PulsatingCircleAnimation extends StatefulWidget {
+  const PulsatingCircleAnimation({super.key});
 
   @override
-  State<SBILoadingAnimation> createState() => _SBILoadingAnimationState();
+  State<PulsatingCircleAnimation> createState() =>
+      _PulsatingCircleAnimationState();
 }
 
-class _SBILoadingAnimationState extends State<SBILoadingAnimation>
+class _PulsatingCircleAnimationState extends State<PulsatingCircleAnimation>
     with TickerProviderStateMixin {
   late AnimationController _animationController;
   late AnimationController _secondAnimationController;
