@@ -16,10 +16,11 @@ class _LoadingAnimationState extends State<LoadingAnimation>
   void initState() {
     super.initState();
     _controller = AnimationController(
-        vsync: this,
-        duration: const Duration(
-          milliseconds: 5000,
-        ));
+      vsync: this,
+      duration: const Duration(
+        milliseconds: 5000,
+      ),
+    );
     _controller.forward();
   }
 
