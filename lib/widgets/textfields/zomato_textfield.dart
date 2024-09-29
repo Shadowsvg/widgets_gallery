@@ -143,7 +143,6 @@ class _ZomatoTextFieldState extends State<ZomatoTextField>
     super.initState();
 
     timer = Timer.periodic(const Duration(seconds: 2), (timer) {
-      print(timer.tick);
       controller.animateTo(
         timer.tick % hintList.length * 48,
         duration: const Duration(milliseconds: 1000),
