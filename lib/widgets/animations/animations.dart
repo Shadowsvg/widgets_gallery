@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:widgets_gallery/base_scaffold.dart';
+import 'package:widgets_gallery/widgets/animations/alarm_animation.dart';
 import 'package:widgets_gallery/widgets/animations/button_animation.dart';
 import 'package:widgets_gallery/widgets/animations/loading_animation.dart';
 import 'package:widgets_gallery/widgets/buttons/normal_button.dart';
@@ -30,6 +31,13 @@ class Animations extends StatelessWidget {
           NormalButton(
             label: 'Button Animation',
             onTapWidget: ButtonAnimation(),
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          NormalButton(
+            label: 'Alarm Animation',
+            onTapWidget: AlarmAnimation(),
           ),
         ],
       ),
