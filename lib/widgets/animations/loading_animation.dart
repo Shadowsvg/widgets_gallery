@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:widgets_gallery/base_scaffold.dart';
 
@@ -11,6 +13,7 @@ class LoadingAnimation extends StatefulWidget {
 class _LoadingAnimationState extends State<LoadingAnimation>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
+  late Animation<double> _animation;
 
   @override
   void initState() {
@@ -18,10 +21,19 @@ class _LoadingAnimationState extends State<LoadingAnimation>
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(
-        milliseconds: 5000,
+        seconds: 2,
       ),
     );
-    _controller.forward();
+
+    _animation = Tween<double>(begin: 0, end: math.pi * 2).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Curves.linear,
+      ),
+    )..addListener(() {
+        setState(() {});
+      });
+    _controller.repeat();
   }
 
   @override
@@ -34,36 +46,88 @@ class _LoadingAnimationState extends State<LoadingAnimation>
   Widget build(BuildContext context) {
     return BaseScaffold(
       body: Center(
-        child: Container(
-          color: Colors.grey.shade400,
-          child: CustomPaint(
-            size: const Size(
-              300,
-              300,
+        child: Stack(
+          children: [
+            CustomPaint(
+              size: const Size(300, 300),
+              painter: ArcPainter(
+                color: Colors.blueAccent.shade100.withOpacity(0.3),
+                startAngle: 0,
+                sweepAngle: math.pi * 2,
+                isBackground: true,
+              ),
             ),
-            painter: MasterPainter(),
-          ),
+
+            CustomPaint(
+              size: const Size(300, 300),
+              painter: ArcPainter(
+                color: Colors.blueAccent,
+                startAngle: _animation.value,
+                sweepAngle: (math.pi / 2),
+                isBackground: false,
+              ),
+            ),
+            // CustomPaint(
+            //   size: const Size(300, 300),
+            //   painter: ArcPainter(),
+            // ),
+          ],
         ),
       ),
     );
   }
 }
 
-class MasterPainter extends CustomPainter {
+class ArcPainter extends CustomPainter {
+  final double startAngle;
+  final double sweepAngle;
+  final Color color;
+  final bool isBackground;
+
+  ArcPainter({
+    required this.startAngle,
+    required this.sweepAngle,
+    required this.color,
+    required this.isBackground,
+  });
   @override
   void paint(Canvas canvas, Size size) {
-    Paint paint = Paint();
-    paint.strokeWidth = 2;
-    paint.color = Colors.red;
-    canvas.drawLine(
-      Offset.zero,
-      Offset(size.width, 0),
-      paint,
-    );
+    const rect = Rect.fromLTRB(0, 0, 300, 300);
+    Paint paint = Paint()
+      ..strokeCap = StrokeCap.round
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 10;
+
+    // if (isBackground) {
+    //   paint.color = color; // Solid color for the background arc
+    // } else {
+    //   // gradient for the upper arc
+    //   final gradient = LinearGradient(
+    //     colors: [
+    //       Colors.blueAccent.withOpacity(0), // Transparent start
+    //       Colors.blueAccent, // Full color
+    //       Colors.blueAccent.withOpacity(0), // Transparent end
+    //     ],
+    //     stops: const [0.0, 0.5, 1.0],
+    //   );
+
+    // Apply gradient shader
+    // paint.shader = gradient.createShader(rect);
+    // }
+
+    // const startAngle = 0.0;
+    // const sweepAngle = math.pi / 2;
+
+    canvas.drawArc(rect, startAngle, sweepAngle, false, paint);
   }
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return false;
+    // Only repaint if the angles have changed
+
+    return oldDelegate is ArcPainter &&
+        (oldDelegate.startAngle != startAngle ||
+            oldDelegate.sweepAngle != sweepAngle);
   }
 }
