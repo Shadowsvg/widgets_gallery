@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:widgets_gallery/base_scaffold.dart';
 import 'package:widgets_gallery/widgets/animations/alarm_animation.dart';
 import 'package:widgets_gallery/widgets/animations/button_animation.dart';
+import 'package:widgets_gallery/widgets/animations/circular_loading_animation.dart';
 import 'package:widgets_gallery/widgets/animations/grid_animation.dart';
 import 'package:widgets_gallery/widgets/animations/loading_animation.dart';
 import 'package:widgets_gallery/widgets/buttons/normal_button.dart';
@@ -46,6 +47,13 @@ class Animations extends StatelessWidget {
           NormalButton(
             label: 'Grid Animation',
             onTapWidget: GridAnimation(),
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          NormalButton(
+            label: 'Circular Loading Animation',
+            onTapWidget: CircularLoadingAnimation(),
           ),
         ],
       ),
