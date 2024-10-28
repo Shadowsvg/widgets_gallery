@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:widgets_gallery/base_scaffold.dart';
 import 'package:widgets_gallery/widgets/animations/alarm_animation.dart';
 import 'package:widgets_gallery/widgets/animations/button_animation.dart';
-import 'package:widgets_gallery/widgets/animations/circular_loading_animation.dart';
 import 'package:widgets_gallery/widgets/animations/grid_animation.dart';
-import 'package:widgets_gallery/widgets/animations/loading_animation.dart';
+import 'package:widgets_gallery/widgets/animations/loading_animations.dart';
 import 'package:widgets_gallery/widgets/buttons/normal_button.dart';
-import 'package:widgets_gallery/widgets/animations/pulsating_circle_animation.dart';
+import 'package:widgets_gallery/widgets/animations/transaction_animation.dart';
 
 class Animations extends StatelessWidget {
   const Animations({super.key});
@@ -17,15 +16,15 @@ class Animations extends StatelessWidget {
       body: Column(
         children: [
           NormalButton(
-            label: 'Circular Loading Animation',
-            onTapWidget: PulsatingCircleAnimation(),
+            label: 'Loading Animations',
+            onTapWidget: LoadingAnimations(),
           ),
           SizedBox(
             height: 20,
           ),
           NormalButton(
-            label: 'Circular progress animation',
-            onTapWidget: LoadingAnimation(),
+            label: 'Transaction Animation',
+            onTapWidget: TransactionAnimation(),
           ),
           SizedBox(
             height: 20,
@@ -50,10 +49,6 @@ class Animations extends StatelessWidget {
           ),
           SizedBox(
             height: 20,
-          ),
-          NormalButton(
-            label: 'Circular Loading Animation',
-            onTapWidget: CircularLoadingAnimation(),
           ),
         ],
       ),
