@@ -16,24 +16,27 @@ class WidgetList extends StatelessWidget {
           padding: EdgeInsets.all(21),
           child: Column(
             children: [
-              NormalButton(label: 'Buttons', onTapWidget: ButtonsList()),
-              SizedBox(
-                height: 20,
-              ),
-              NormalButton(
-                label: 'TextFields',
-                onTapWidget: TextFieldsList(),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              NormalButton(
-                label: 'Animations',
-                onTapWidget: Animations(),
-              ),
-              SizedBox(
-                height: 20,
-              ),
+              // NormalButton(
+              //   label: 'Buttons',
+              //   onTapWidget: ButtonsList(),
+              // ),
+              // SizedBox(
+              //   height: 20,
+              // ),
+              // NormalButton(
+              //   label: 'TextFields',
+              //   onTapWidget: TextFieldsList(),
+              // ),
+              // SizedBox(
+              //   height: 20,
+              // ),
+              // NormalButton(
+              //   label: 'Animations',
+              //   onTapWidget: Animations(),
+              // ),
+              // SizedBox(
+              //   height: 20,
+              // ),
               NormalButton(
                 label: 'Bank Search Logic',
                 onTapWidget: BankSearchLogic(),
