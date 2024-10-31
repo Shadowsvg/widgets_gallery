@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:widgets_gallery/screens/bank_search_logic.dart';
 import 'package:widgets_gallery/widgets/buttons/buttons_list.dart';
 import 'package:widgets_gallery/widgets/buttons/normal_button.dart';
 import 'package:widgets_gallery/widgets/animations/animations.dart';
@@ -29,6 +30,13 @@ class WidgetList extends StatelessWidget {
               NormalButton(
                 label: 'Animations',
                 onTapWidget: Animations(),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              NormalButton(
+                label: 'Bank Search Logic',
+                onTapWidget: BankSearchLogic(),
               ),
             ],
           ),
